@@ -100,7 +100,9 @@ def main():
         for applyfile in args.applyto:
             applyfile_img = load(applyfile)
             applyfile_data = np.asarray(applyfile_img.dataobj)
-            warped_mask_data = np.asarray(warped_mask_img.dataobj)
+            if np.allclose(applyfile_img.affine, warped_mask_img.affine) and \
+                applyfile_img.shape[:3] == warped_mask_img.shape[:3]:
+                warped_mask_data = np.asarray(warped_mask_img.dataobj)
             try:
                 outdata = applyfile_data * warped_mask_data
             except ValueError:
