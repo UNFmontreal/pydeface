@@ -103,6 +103,18 @@ def main():
             if np.allclose(applyfile_img.affine, warped_mask_img.affine) and \
                 applyfile_img.shape[:3] == warped_mask_img.shape[:3]:
                 warped_mask_data = np.asarray(warped_mask_img.dataobj)
+            else:
+                apply2_warped_mask = tempfile.mkstemp(suffix='.nii.gz')
+                outfile_type = get_outfile_type(apply2_warped_mask)
+                pdu.warp_mask(
+                    args.facemask,
+                    template_reg_mat,
+                    applyfile,
+                    apply2_warped_mask,
+                    outfile_type,
+                    None)
+                apply2_warped_mask_img = load(apply2_warped_mask)
+                warped_mask_data = np.asarray(apply2_warped_mask_img.dataobj)
             try:
                 outdata = applyfile_data * warped_mask_data
             except ValueError:

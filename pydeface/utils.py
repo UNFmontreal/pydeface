@@ -101,15 +101,7 @@ def deface_image(infile=None, outfile=None, facemask=None,
 
     outfile_type = get_outfile_type(warped_mask)
     # warp facemask to infile
-    flirt = fsl.FLIRT()
-    flirt.inputs.in_file = facemask
-    flirt.inputs.in_matrix_file = template_reg_mat
-    flirt.inputs.apply_xfm = True
-    flirt.inputs.reference = infile
-    flirt.inputs.out_file = warped_mask
-    flirt.inputs.output_type = outfile_type
-    flirt.inputs.out_matrix_file = warped_mask_mat
-    flirt.run()
+    warp_mask(facemask, template_reg_mat, infile, warped_mask, outfile_type, warped_mask_mat)
 
     # multiply mask by infile and save
     infile_img = load(infile)
@@ -131,3 +123,15 @@ def deface_image(infile=None, outfile=None, facemask=None,
         return warped_mask_img
     else:
         return warped_mask_img, warped_mask, template_reg, template_reg_mat
+
+
+def warp_mask(facemask, template_reg_mat, infile, warped_mask, outfile_type, warped_mask_mat):
+    flirt = fsl.FLIRT()
+    flirt.inputs.in_file = facemask
+    flirt.inputs.in_matrix_file = template_reg_mat
+    flirt.inputs.apply_xfm = True
+    flirt.inputs.reference = infile
+    flirt.inputs.out_file = warped_mask
+    flirt.inputs.output_type = outfile_type
+    flirt.inputs.out_matrix_file = warped_mask_mat
+    flirt.run()
